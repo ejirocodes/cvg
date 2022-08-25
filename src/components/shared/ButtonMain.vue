@@ -9,14 +9,14 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 const buttonStyle = computed(() => {
   const themes = {
-    [ButtonType.Fill]: "bg-black text-white hover:bg-white hover:text-black",
-    [ButtonType.Outline]: "bg-white text-black hover:bg-black hover:text-white",
+    [ButtonType.Fill]: "bg-pri text-white hover:bg-white hover:text-pri",
+    [ButtonType.Outline]: "bg-white text-pri hover:bg-pri hover:text-white",
   };
   return themes[props.buttonType];
 });
 </script>
 <template>
-  <button :class="buttonStyle" class="border border-black">
+  <button :class="buttonStyle" class="border border-pri">
     <slot />
   </button>
 </template>
