@@ -1,8 +1,8 @@
 {
-  "*.{ts,js,json,vue,cjs,mjs,cts,mts}": [
+  "*.{ts,js,vue,cjs,mjs,cts,mts}": [
     "npm run lint"
   ],
-  "*.{ts,js,json,md,vue,cjs,mjs,cts,mts}": [
+  "*.{ts,js,md,vue,cjs,mjs,cts,mts}": [
     "npm run prettier"
   ]
 }
