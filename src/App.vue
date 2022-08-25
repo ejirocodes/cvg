@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ButtonMain from "@/components/shared/ButtonMain.vue";
+</script>
 
 <template>
-  <h1 class="text-red-500">heeww</h1>
+  <ButtonMain class="w-[200px] h-12"> Start </ButtonMain>
 </template>
 
 <style scoped>
