@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { ButtonType } from "@/utils";
 type IProps = {
-  buttonType: keyof typeof ButtonType;
+  buttonType?: keyof typeof ButtonType;
 };
 const props = withDefaults(defineProps<IProps>(), {
   buttonType: ButtonType.Fill,

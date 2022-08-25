@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import ButtonMain from "@/components/shared/ButtonMain.vue";
+import StepperWizard from "@/components/multistep-form/StepperWizard.vue";
 </script>
 
 <template>
-  <ButtonMain class="w-[200px] h-12"> Start </ButtonMain>
+  <div>
+    <StepperWizard />
+    <ButtonMain class="w-[200px] h-12"> Start </ButtonMain>
+  </div>
 </template>
 
 <style scoped>
