@@ -14,4 +14,5 @@ export interface Country {
   value: number;
   currency: Currency;
   locale: string;
+  basePrice: number;
 }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { countries } from "@/data/countries";
+import type { Country } from "@/types";
 defineProps<{
-  value: string;
+  value: number;
   id: string;
   label: string;
+  countries: Country[];
 }>();
 defineEmits(["update:value"]);
 </script>
