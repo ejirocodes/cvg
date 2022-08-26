@@ -2,6 +2,9 @@
 defineProps<{
   value: string;
   type: string;
+  label: string;
+  id: string;
+  placeholder: string;
 }>();
 defineEmits(["update:value"]);
 </script>
@@ -9,14 +12,14 @@ defineEmits(["update:value"]);
 <template>
   <div>
     <label
-      class="block text-sm font-medium mb-1 text-gray-700"
-      :for="($attrs.id as string)"
-      >{{ $attrs.label }}</label
-    >
+      :for="id"
+      class="block mb-1 font-medium text-gray-700"
+      v-text="label"
+    />
     <input
-      :placeholder="$attrs.placeholder as string"
-      :id="$attrs.id as string"
-      class="shadow-sm focus:ring-pri focus:border-pri block w-full sm:text-sm border-gray-300 rounded-md"
+      :placeholder="placeholder"
+      :id="id"
+      class="shadow-sm focus:ring-pri focus:border-pri block w-full sm:text-sm border-gray-300"
       :value="value"
       :type="type"
       @input="$emit('update:value', ($event.target as HTMLInputElement).value)"

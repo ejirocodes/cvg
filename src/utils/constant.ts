@@ -24,3 +24,9 @@ export const ActionType = createEnum({
   Next: "Next",
   Prev: "Prev",
 });
+
+export const Currencies = createEnum({
+  HKD: "HKD",
+  USD: "USD",
+  AUD: "AUD",
+});

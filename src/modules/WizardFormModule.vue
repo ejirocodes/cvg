@@ -5,11 +5,13 @@ import ButtonMain from "@/components/shared/ButtonMain.vue";
 import useStep from "@/composable/step";
 import BaseInput from "../components/form/BaseInput.vue";
 import { ref } from "vue";
-
+import { countries } from "@/data/countries";
+import BaseSelect from "../components/form/BaseSelect.vue";
 const { currentStep, handleNext, steps } = useStep();
 
 const name = ref("");
 const age = ref("");
+const country = ref("");
 </script>
 
 <template>
@@ -39,7 +41,7 @@ const age = ref("");
           label="Full name"
         />
       </div>
-      <div>
+      <div class="mb-4">
         <BaseInput
           v-model:value="age"
           placeholder="Age"
@@ -48,6 +50,11 @@ const age = ref("");
           label="Age"
         />
       </div>
+      {{ country }}
+      <BaseSelect id="country" v-model:value="country" label="Country" />
+      <!-- <select name="country" id="country">
+        <option v-for="country in countries" :key="country.label"></option>
+      </select> -->
     </template>
   </WizardWrapper>
 </template>
