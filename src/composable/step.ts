@@ -25,9 +25,7 @@ export default function useStep() {
     switchType: keyof typeof ActionType
   ) {
     const current = steps.value.find((step) => step.id === indx) as Step;
-    // Next function
-    // TODO mark current as completed
-    // TODO next becomes current
+
     steps.value.forEach((step) => {
       if (step.id === current?.id) {
         if (switchType === ActionType.Next) {
