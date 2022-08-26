@@ -1,25 +1,23 @@
 <script setup lang="ts">
 import { CheckIcon } from "@heroicons/vue/24/solid";
+import { StepperStatus } from "@/utils";
+import useStep from "@/composable/step";
 
-const steps = [
-  { name: "Start", href: "#", status: "complete" },
-  { name: "Info", href: "#", status: "current" },
-  { name: "Summary", href: "#", status: "upcoming" },
-];
+const { currentStep, handleNext, handlePrev, steps } = useStep();
 </script>
 
 <template>
   <nav aria-label="Progress">
-    <ol role="list" class="flex items-center">
+    <ol role="list" class="flex items-center justify-center">
       <li
         v-for="(step, stepIdx) in steps"
-        :key="step.name"
+        :key="step.id"
         :class="[
           stepIdx !== steps.length - 1 ? 'pr-8 sm:pr-20' : '',
           'relative',
         ]"
       >
-        <template v-if="step.status === 'complete'">
+        <template v-if="step.status === StepperStatus.Complete">
           <div class="absolute inset-0 flex items-center" aria-hidden="true">
             <div class="h-0.5 w-full bg-pri" />
           </div>
@@ -31,7 +29,7 @@ const steps = [
             <span class="sr-only">{{ step.name }}</span>
           </a>
         </template>
-        <template v-else-if="step.status === 'current'">
+        <template v-else-if="step.status === StepperStatus.Current">
           <div class="absolute inset-0 flex items-center" aria-hidden="true">
             <div class="h-0.5 w-full bg-gray-200" />
           </div>
