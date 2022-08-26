@@ -16,3 +16,11 @@ export const StepperStatus = createEnum({
   Current: "Current",
   Upcoming: "Upcoming",
 });
+
+/**
+ * Enum for stepper status
+ */
+export const ActionType = createEnum({
+  Next: "Next",
+  Prev: "Prev",
+});

@@ -1,5 +1,5 @@
 import type { Step } from "@/types";
-import { StepperStatus } from "@/utils";
+import { ActionType, StepperStatus } from "@/utils";
 import { computed, onMounted, ref } from "vue";
 
 export default function useStep() {
@@ -12,20 +12,40 @@ export default function useStep() {
 
   const totalSteps = computed(() => steps.value.length);
 
-  function handleNext() {
-    if (currentStep.value) {
-      currentStep.value++;
-    }
+  function handleNext(currentIndex: number) {
+    switchCurrentSteps(currentIndex, ActionType.Next);
   }
 
   function handlePrev() {
     if (currentStep.value) currentStep.value--;
   }
 
-  function switchCurrentSteps(indx: number) {
-    // steps.value = steps.value.map((step) => {
-    //   step.status = StepperStatus.Upcoming;
-    // });
+  function switchCurrentSteps(
+    indx: number,
+    switchType: keyof typeof ActionType
+  ) {
+    const current = steps.value.find((step) => step.id === indx) as Step;
+    // Next function
+    // TODO mark current as completed
+    // TODO next becomes current
+    steps.value.forEach((step) => {
+      if (step.id === current?.id) {
+        if (switchType === ActionType.Next) {
+          step.status = StepperStatus.Complete;
+          currentStep.value++;
+        }
+        if (switchType === ActionType.Prev) {
+          step.status = StepperStatus.Upcoming;
+        }
+      } else {
+        step.status = StepperStatus.Upcoming;
+      }
+      //   Set next stepper as current
+      if (step.id === current?.id + 1) {
+        console.log(step);
+        step.status = StepperStatus.Current;
+      }
+    });
   }
 
   onMounted(() => {

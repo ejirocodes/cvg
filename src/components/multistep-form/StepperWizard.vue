@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { CheckIcon } from "@heroicons/vue/24/solid";
 import { StepperStatus } from "@/utils";
-import useStep from "@/composable/step";
-
-const { currentStep, handleNext, handlePrev, steps } = useStep();
+import type { Step } from "@/types";
+defineProps<{
+  steps: Step[];
+}>();
 </script>
 
 <template>
