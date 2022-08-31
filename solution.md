@@ -4,9 +4,10 @@
 
 - Vue 3
 - Vite
+- Vitest
 - Composition API and Vue Composable functions
-- TailwindCSS
 - Typescript
+- TailwindCSS
 - Eslint, husky and lint-staged for automatic linting on commit
 - Conventional commit
 
@@ -33,6 +34,10 @@
 #### Premium calculation
 
 - The `premium` value will not be calculated until the required values (age, rate) are passed in
+
+#### Test coverage
+
+- I chose Vitest [Vitest](https://vitest.dev) bacause it is blazing fast and it has similar, performant and works perfectly with Vite. I wrote test for the most important business logic of the app, the premium calculation feature.
 
 #### TypeScript support
 
