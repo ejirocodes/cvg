@@ -4,6 +4,7 @@
     <div class="pt-10">
       <slot name="stepper" />
       <slot name="content" />
+      <slot name="error" />
     </div>
   </main>
 </template>

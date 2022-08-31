@@ -1,9 +1,10 @@
 import type { Step } from "@/types";
-import { ActionType, StepperStatus } from "@/utils";
-import { computed, onMounted, ref } from "vue";
+import { ActionType, MAX_AGE, StepperStatus } from "@/utils";
+import { computed, onMounted, ref, type Ref } from "vue";
 
-export default function useStep() {
+export default function useStep(age: Ref<string>) {
   const currentStep = ref(1);
+  const maxAgeError = ref(false);
   const steps = ref<Step[]>([
     { id: 1, name: "Start", href: "#", status: StepperStatus.Current },
     { id: 2, name: "Info", href: "#", status: StepperStatus.Upcoming },
@@ -17,8 +18,6 @@ export default function useStep() {
   }
 
   function handlePrev() {
-    console.log(currentStep.value);
-
     switchCurrentSteps(currentStep.value, ActionType.Prev);
   }
 
@@ -26,6 +25,9 @@ export default function useStep() {
     indx: number,
     switchType: keyof typeof ActionType
   ) {
+    if (age.value && parseFloat(age.value) >= MAX_AGE) {
+      return (maxAgeError.value = true);
+    }
     const current = steps.value.find((step) => step.id === indx) as Step;
     if (
       currentStep.value === steps.value.length &&
@@ -47,7 +49,6 @@ export default function useStep() {
         }
         if (switchType === ActionType.Prev) {
           step.status = StepperStatus.Upcoming;
-          console.log(currentStep.value);
           currentStep.value--;
         }
       }
@@ -60,5 +61,12 @@ export default function useStep() {
     )?.id as number;
   });
 
-  return { handleNext, handlePrev, currentStep, steps, totalSteps };
+  return {
+    handleNext,
+    handlePrev,
+    currentStep,
+    steps,
+    totalSteps,
+    maxAgeError,
+  };
 }
