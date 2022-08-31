@@ -1,5 +1,5 @@
 {
-  "name": "covergo-test",
+  "name": "cvg",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
