@@ -1,4 +1,4 @@
-# Covergo exercise
+# cvg
 
 ## 1. Tech Stack
 
