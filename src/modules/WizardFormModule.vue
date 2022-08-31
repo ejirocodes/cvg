@@ -75,6 +75,17 @@ function navigateSummary() {
   handleNext();
 }
 
+function resetForm() {
+  age.value = "";
+  name.value = "";
+  selectedCountryRate.value = countries[0].rate;
+  selectedPackage.value = packages.value[0];
+}
+function insurancePurchase() {
+  handleNext();
+  resetForm();
+}
+
 watch([name, age], (_name, _age) => {
   if (_name) {
     isNameError.value = false;
@@ -215,7 +226,7 @@ watch([name, age], (_name, _age) => {
           >
             Back
           </ButtonMain>
-          <ButtonMain @click.prevent="handleNext" class="w-[200px]">
+          <ButtonMain @click.prevent="insurancePurchase" class="w-[200px]">
             Buy
           </ButtonMain>
         </div>

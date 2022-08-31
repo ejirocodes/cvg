@@ -37,6 +37,8 @@ export default function useStep() {
         if (switchType === ActionType.Next) {
           step.status = StepperStatus.Complete;
           currentStep.value++;
+          const newStep = [...steps.value];
+          newStep[indx].status = StepperStatus.Current;
         }
         if (switchType === ActionType.Prev) {
           step.status = StepperStatus.Upcoming;
@@ -45,8 +47,6 @@ export default function useStep() {
         }
       }
     });
-    const newStep = [...steps.value];
-    newStep[indx].status = StepperStatus.Current;
   }
 
   onMounted(() => {
