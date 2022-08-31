@@ -17,6 +17,8 @@ export default function useStep() {
   }
 
   function handlePrev() {
+    console.log(currentStep.value);
+
     switchCurrentSteps(currentStep.value, ActionType.Prev);
   }
 
@@ -25,7 +27,10 @@ export default function useStep() {
     switchType: keyof typeof ActionType
   ) {
     const current = steps.value.find((step) => step.id === indx) as Step;
-    if (currentStep.value === steps.value.length) {
+    if (
+      currentStep.value === steps.value.length &&
+      switchType === ActionType.Next
+    ) {
       steps.value.forEach((step) => {
         step.status = StepperStatus.Upcoming;
       });
