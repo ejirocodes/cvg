@@ -30,3 +30,6 @@ export const Currencies = createEnum({
   USD: "USD",
   AUD: "AUD",
 });
+
+export const PREMIUM_VAL = 10;
+export const MAX_AGE = 100;

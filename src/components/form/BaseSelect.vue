@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Country } from "@/types";
 defineProps<{
-  value: number;
+  value: string;
   id: string;
   label: string;
   countries: Country[];
@@ -24,8 +24,8 @@ defineEmits(["update:value"]);
     >
       <option
         v-for="option in countries"
-        :key="option.value"
-        :value="option.value"
+        :key="option.rate"
+        :value="option.rate"
         v-text="option.label"
       />
     </select>

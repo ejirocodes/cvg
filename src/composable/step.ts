@@ -40,7 +40,6 @@ export default function useStep() {
       }
       //   Set next stepper as current
       if (step.id === current?.id + 1) {
-        console.log(step);
         step.status = StepperStatus.Current;
       }
     });

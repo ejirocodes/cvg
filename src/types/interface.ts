@@ -11,7 +11,7 @@ export interface Step {
 }
 export interface Country {
   label: string;
-  value: number;
+  rate: string;
   currency: Currency;
   locale: string;
   basePrice: number;

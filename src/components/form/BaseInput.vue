@@ -22,6 +22,7 @@ defineEmits(["update:value"]);
       class="shadow-sm focus:ring-pri focus:border-pri block w-full sm:text-sm border-gray-300"
       :value="value"
       :type="type"
+      :min="type === 'number' ? '1' : ''"
       @input="$emit('update:value', ($event.target as HTMLInputElement).value)"
     />
   </div>

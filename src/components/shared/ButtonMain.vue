@@ -16,7 +16,7 @@ const buttonStyle = computed(() => {
 });
 </script>
 <template>
-  <button :class="buttonStyle" class="border border-pri">
+  <button :class="buttonStyle" class="border border-pri h-12">
     <slot />
   </button>
 </template>
