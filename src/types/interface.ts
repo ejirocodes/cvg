@@ -16,3 +16,9 @@ export interface Country {
   locale: string;
   basePrice: number;
 }
+export interface Package {
+  id: number;
+  label: string;
+  value: string;
+  type: string;
+}

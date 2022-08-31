@@ -19,6 +19,7 @@ defineEmits(["update:value"]);
     <input
       :placeholder="placeholder"
       :id="id"
+      required
       class="shadow-sm focus:ring-pri focus:border-pri block w-full sm:text-sm border-gray-300"
       :value="value"
       :type="type"

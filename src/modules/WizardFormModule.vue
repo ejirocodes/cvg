@@ -4,15 +4,17 @@ import StepperWizard from "@/components/multistep-form/StepperWizard.vue";
 import ButtonMain from "@/components/shared/ButtonMain.vue";
 import useStep from "@/composable/step";
 import BaseInput from "../components/form/BaseInput.vue";
-import { computed, ref, type ComputedRef } from "vue";
+import { computed, ref, watch, type ComputedRef } from "vue";
 import BaseSelect from "../components/form/BaseSelect.vue";
 // import RadioGroup from "../components/form/RadioGroup.vue";
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/vue";
 import { CheckCircleIcon } from "@heroicons/vue/24/solid";
 import { countries } from "@/data/countries";
-import type { Country } from "@/types";
+import type { Package, Country } from "@/types";
 import { ButtonType } from "@/utils";
 import { usePremium } from "@/composable/premium";
+import SummaryView from "../view/SummaryView.vue";
+import ErrorDisplay from "../components/shared/ErrorDisplay.vue";
 
 const selectedCountryRate = ref<Country["rate"]>(countries[0].rate);
 const name = ref("");
@@ -22,7 +24,7 @@ const country = computed(() =>
   countries.find((country) => country.rate === selectedCountryRate.value)
 );
 
-const options = computed(() => {
+const packages: ComputedRef<Package[]> = computed(() => {
   const calculatedBasePrice = country.value?.basePrice as number;
   const calculatedCurrency = country.value?.currency;
 
@@ -30,6 +32,7 @@ const options = computed(() => {
     {
       id: 1,
       label: "Standard",
+      type: "Standard",
       value: "0",
     },
     {
@@ -37,6 +40,7 @@ const options = computed(() => {
       label: `Safe (+${
         (calculatedBasePrice as number) * 0.5
       }${calculatedCurrency}, 50%)`,
+      type: "Safe",
       value: "0.5",
     },
     {
@@ -44,11 +48,14 @@ const options = computed(() => {
       label: `Super Safe (+${
         calculatedBasePrice * 0.75
       }${calculatedCurrency}, 75%)`,
+      type: "Super Safe",
       value: "0.75",
     },
   ];
 });
-const selectedPackage = ref(options.value[0]);
+const selectedPackage = ref<Package>(packages.value[0]);
+const isNameError = ref(false);
+const isAgeError = ref(false);
 
 const { currentStep, handleNext, handlePrev, steps } = useStep();
 const { premium } = usePremium(
@@ -57,6 +64,25 @@ const { premium } = usePremium(
   selectedPackage,
   country as ComputedRef<Country>
 );
+
+function navigateSummary() {
+  if (!name.value) {
+    return (isNameError.value = true);
+  }
+  if (!age.value) {
+    return (isAgeError.value = true);
+  }
+  handleNext();
+}
+
+watch([name, age], (_name, _age) => {
+  if (_name) {
+    isNameError.value = false;
+  }
+  if (_age) {
+    isAgeError.value = false;
+  }
+});
 </script>
 
 <template>
@@ -73,7 +99,7 @@ const { premium } = usePremium(
           </p>
         </div>
 
-        <ButtonMain class="w-[200px] h-12" @click="handleNext(currentStep)">
+        <ButtonMain class="w-[200px] h-12" @click="handleNext">
           Start
         </ButtonMain>
       </section>
@@ -87,6 +113,9 @@ const { premium } = usePremium(
             label="Full name"
           />
         </div>
+        <ErrorDisplay class="mb-3" v-if="isNameError"
+          >Please enter your name</ErrorDisplay
+        >
         <div class="mb-4">
           <BaseInput
             v-model:value="age"
@@ -96,18 +125,19 @@ const { premium } = usePremium(
             label="Age"
           />
         </div>
+        <ErrorDisplay v-if="isAgeError">Please enter your age</ErrorDisplay>
+
         <BaseSelect
           :countries="countries"
           id="country"
           v-model:value="selectedCountryRate"
           label="Country"
         />
-        {{ selectedPackage }}
         <RadioGroup v-model="selectedPackage">
           <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
             <RadioGroupOption
               as="template"
-              v-for="item in options"
+              v-for="item in packages"
               :key="item.id"
               :value="item"
               v-slot="{ checked, active }"
@@ -117,10 +147,8 @@ const { premium } = usePremium(
                   selectedPackage.id === item.id
                     ? 'border-transparent'
                     : 'border-gray-300',
-                  selectedPackage.id === item.id
-                    ? 'border-pri ring-2 ring-pri'
-                    : '',
-                  'relative bg-white border rounded-lg shadow-sm p-4 flex cursor-pointer focus:outline-none',
+                  selectedPackage.id === item.id ? 'border-pri border-2' : '',
+                  'relative bg-white border shadow-sm p-4 flex cursor-pointer focus:outline-none',
                 ]"
               >
                 <span class="flex-1 flex">
@@ -136,15 +164,15 @@ const { premium } = usePremium(
                 <CheckCircleIcon
                   :class="[
                     selectedPackage.id !== item.id ? 'invisible' : '',
-                    'h-5 w-5 text-pri/60',
+                    'h-5 w-5 text-pri',
                   ]"
                   aria-hidden="true"
                 />
                 <span
                   :class="[
                     active ? 'border' : 'border-2',
-                    checked ? 'border-pri' : 'border-transparent',
-                    'absolute -inset-px rounded-lg pointer-events-none',
+                    checked ? 'border-pri border-2' : 'border-transparent',
+                    'absolute -inset-px pointer-events-none',
                   ]"
                   aria-hidden="true"
                 />
@@ -156,20 +184,40 @@ const { premium } = usePremium(
           class="mx-auto text-center flex-col mt-8 gap-4 flex justify-center items-center"
         >
           <p class="block text-2xl mb-5 font-bold" v-show="premium">
-            Your premium is {{ premium }}
+            Your premium is {{ premium }} {{ country?.currency }}
           </p>
           <div>
             <ButtonMain
-              @click="handlePrev(currentStep)"
+              @click="handlePrev"
               :buttonType="ButtonType.Outline"
               class="w-[200px] mr-10"
             >
               Back
             </ButtonMain>
-            <ButtonMain @click="handleNext(currentStep)" class="w-[200px]">
+            <ButtonMain @click.prevent="navigateSummary" class="w-[200px]">
               Next
             </ButtonMain>
           </div>
+        </div>
+      </section>
+      <section v-if="currentStep === 3">
+        <SummaryView
+          :name="name"
+          :country="country!"
+          :premium="premium!"
+          :package="selectedPackage"
+        />
+        <div>
+          <ButtonMain
+            @click="handlePrev"
+            :buttonType="ButtonType.Outline"
+            class="w-[200px] mr-10"
+          >
+            Back
+          </ButtonMain>
+          <ButtonMain @click.prevent="handleNext" class="w-[200px]">
+            Buy
+          </ButtonMain>
         </div>
       </section>
     </template>

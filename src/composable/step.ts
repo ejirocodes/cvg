@@ -12,12 +12,12 @@ export default function useStep() {
 
   const totalSteps = computed(() => steps.value.length);
 
-  function handleNext(currentIndex: number) {
-    switchCurrentSteps(currentIndex, ActionType.Next);
+  function handleNext() {
+    switchCurrentSteps(currentStep.value, ActionType.Next);
   }
 
-  function handlePrev(currentIndex: number) {
-    switchCurrentSteps(currentIndex, ActionType.Prev);
+  function handlePrev() {
+    switchCurrentSteps(currentStep.value, ActionType.Prev);
   }
 
   function switchCurrentSteps(
@@ -25,7 +25,13 @@ export default function useStep() {
     switchType: keyof typeof ActionType
   ) {
     const current = steps.value.find((step) => step.id === indx) as Step;
-
+    if (currentStep.value === steps.value.length) {
+      steps.value.forEach((step) => {
+        step.status = StepperStatus.Upcoming;
+      });
+      steps.value[0].status = StepperStatus.Current;
+      return (currentStep.value = 1);
+    }
     steps.value.forEach((step) => {
       if (step.id === current?.id) {
         if (switchType === ActionType.Next) {
