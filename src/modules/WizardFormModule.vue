@@ -4,7 +4,7 @@ import StepperWizard from "@/components/multistep-form/StepperWizard.vue";
 import ButtonMain from "@/components/shared/ButtonMain.vue";
 import useStep from "@/composable/step";
 import BaseInput from "../components/form/BaseInput.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref, type ComputedRef } from "vue";
 import BaseSelect from "../components/form/BaseSelect.vue";
 // import RadioGroup from "../components/form/RadioGroup.vue";
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/vue";
@@ -14,16 +14,13 @@ import type { Country } from "@/types";
 import { ButtonType } from "@/utils";
 import { usePremium } from "@/composable/premium";
 
-const selectedCountry = ref<Country["rate"]>(countries[0].rate);
+const selectedCountryRate = ref<Country["rate"]>(countries[0].rate);
 const name = ref("");
 const age = ref("");
 
-const { currentStep, handleNext, handlePrev, steps } = useStep();
-const { premium, country } = usePremium(age, selectedCountry);
-
-// const computedCountrySelected = computed(() => {
-//   return countries.find((cntr) => cntr.rate === selectedCountry.value);
-// });
+const country = computed(() =>
+  countries.find((country) => country.rate === selectedCountryRate.value)
+);
 
 const options = computed(() => {
   const calculatedBasePrice = country.value?.basePrice as number;
@@ -43,6 +40,7 @@ const options = computed(() => {
       value: "0.5",
     },
     {
+      id: 3,
       label: `Super Safe (+${
         calculatedBasePrice * 0.75
       }${calculatedCurrency}, 75%)`,
@@ -50,11 +48,15 @@ const options = computed(() => {
     },
   ];
 });
-const selectedOption = ref(options.value[0]);
+const selectedPackage = ref(options.value[0]);
 
-watch(selectedCountry, () => {
-  selectedOption.value = options.value[0];
-});
+const { currentStep, handleNext, handlePrev, steps } = useStep();
+const { premium } = usePremium(
+  age,
+  selectedCountryRate,
+  selectedPackage,
+  country as ComputedRef<Country>
+);
 </script>
 
 <template>
@@ -97,10 +99,11 @@ watch(selectedCountry, () => {
         <BaseSelect
           :countries="countries"
           id="country"
-          v-model:value="selectedCountry"
+          v-model:value="selectedCountryRate"
           label="Country"
         />
-        <RadioGroup v-model="selectedOption">
+        {{ selectedPackage }}
+        <RadioGroup v-model="selectedPackage">
           <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
             <RadioGroupOption
               as="template"
@@ -111,8 +114,12 @@ watch(selectedCountry, () => {
             >
               <div
                 :class="[
-                  checked ? 'border-transparent' : 'border-gray-300',
-                  active ? 'border-pri ring-2 ring-pri' : '',
+                  selectedPackage.id === item.id
+                    ? 'border-transparent'
+                    : 'border-gray-300',
+                  selectedPackage.id === item.id
+                    ? 'border-pri ring-2 ring-pri'
+                    : '',
                   'relative bg-white border rounded-lg shadow-sm p-4 flex cursor-pointer focus:outline-none',
                 ]"
               >
@@ -127,7 +134,10 @@ watch(selectedCountry, () => {
                   </span>
                 </span>
                 <CheckCircleIcon
-                  :class="[!checked ? 'invisible' : '', 'h-5 w-5 text-pri/60']"
+                  :class="[
+                    selectedPackage.id !== item.id ? 'invisible' : '',
+                    'h-5 w-5 text-pri/60',
+                  ]"
                   aria-hidden="true"
                 />
                 <span
@@ -143,9 +153,11 @@ watch(selectedCountry, () => {
           </div>
         </RadioGroup>
         <div
-          class="mx-auto text-center flex-col mt-16 gap-4 flex justify-center items-center"
+          class="mx-auto text-center flex-col mt-8 gap-4 flex justify-center items-center"
         >
-          <p class="block" v-show="premium">Your premium is {{ premium }}</p>
+          <p class="block text-2xl mb-5 font-bold" v-show="premium">
+            Your premium is {{ premium }}
+          </p>
           <div>
             <ButtonMain
               @click="handlePrev(currentStep)"
