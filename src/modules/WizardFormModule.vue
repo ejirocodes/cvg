@@ -148,13 +148,13 @@ watch(selectedCountry, () => {
           <p class="block" v-show="premium">Your premium is {{ premium }}</p>
           <div>
             <ButtonMain
-              @click="handlePrev"
+              @click="handlePrev(currentStep)"
               :buttonType="ButtonType.Outline"
               class="w-[200px] mr-10"
             >
               Back
             </ButtonMain>
-            <ButtonMain @click="handleNext" class="w-[200px]">
+            <ButtonMain @click="handleNext(currentStep)" class="w-[200px]">
               Next
             </ButtonMain>
           </div>

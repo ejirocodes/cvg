@@ -16,8 +16,8 @@ export default function useStep() {
     switchCurrentSteps(currentIndex, ActionType.Next);
   }
 
-  function handlePrev() {
-    if (currentStep.value) currentStep.value--;
+  function handlePrev(currentIndex: number) {
+    switchCurrentSteps(currentIndex, ActionType.Prev);
   }
 
   function switchCurrentSteps(
@@ -34,15 +34,13 @@ export default function useStep() {
         }
         if (switchType === ActionType.Prev) {
           step.status = StepperStatus.Upcoming;
+          console.log(currentStep.value);
+          currentStep.value--;
         }
-      } else {
-        step.status = StepperStatus.Upcoming;
-      }
-      //   Set next stepper as current
-      if (step.id === current?.id + 1) {
-        step.status = StepperStatus.Current;
       }
     });
+    const newStep = [...steps.value];
+    newStep[indx].status = StepperStatus.Current;
   }
 
   onMounted(() => {
