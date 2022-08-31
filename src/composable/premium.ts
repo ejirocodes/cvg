@@ -1,26 +1,29 @@
 import { PREMIUM_VAL } from "@/utils";
-import { computed, watch, type Ref } from "vue";
-import { countries } from "@/data/countries";
+import { computed, type ComputedRef, type Ref } from "vue";
+import type { Country } from "@/types";
 
-export const usePremium = (age: Ref<string>, rate: Ref<string>) => {
-  const country = computed(() =>
-    countries.find((country) => country.rate === rate.value)
-  );
-
+export const usePremium = (
+  age: Ref<string>,
+  rate: Ref<string>,
+  selectedPackage: Ref<{
+    id: number;
+    label: string;
+    value: string;
+  }>,
+  selectedCountry: ComputedRef<Country>
+) => {
   const premium = computed(() => {
     let price = 0;
-    if (age.value && rate.value) {
-      price = PREMIUM_VAL * parseInt(age.value) * parseFloat(rate.value);
-      console.log(country.value);
-      //   console.log(age.value);
-      console.log(rate.value);
+    if (age.value && rate) {
+      price = PREMIUM_VAL * parseFloat(age.value) * parseFloat(rate.value);
+      if (selectedPackage.value.value !== "") {
+        price =
+          price +
+          selectedCountry.value.basePrice *
+            parseFloat(selectedPackage.value.value);
+      }
     }
     return price;
   });
-  //   watch(age, (val) => {
-  //     if (val) {
-  //       console.log(val);
-  //     }
-  //   });
-  return { premium, country };
+  return { premium };
 };
